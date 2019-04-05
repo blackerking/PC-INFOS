@@ -9,6 +9,9 @@
 [String]$empfangsramtyp = Get-wmiobject Win32_PhysicalMemory | Select Speed
 [String]$empfanggrakaname = Get-WmiObject -class win32_VideoController | Select Description
 [String]$empfanggpuram = Get-WmiObject -class win32_VideoController | Select AdapterRAM
+[String]$empfangsmb1 = Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol | Select State
+[String]$empfanginstalldatum = Get-WmiObject Win32_OperatingSystem | Select InstallDate
+
 $nl = [System.Environment]::NewLine # Zeilenumbruch einer Variable zuweisen
 "Erzeuge lesbare Daten"
 
@@ -72,7 +75,8 @@ $nl = [System.Environment]::NewLine # Zeilenumbruch einer Variable zuweisen
 "PC(BIOS)-Hersteller:$Hersteller"
 "PC-Seriennummer:$Seriennummer"
 "Grafikkarte:$GPUName mit $GPURAM GB VRAM"
-$hdds = Get-PhysicalDisk | Select Model , UniqueId , SerialNumber , Size , BusType, HealthStatus , OperationalStatus
+$hdds = Get-PhysicalDisk | Select Model , SerialNumber , Size , BusType, HealthStatus , OperationalStatus
 
-$a = "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller:$Hersteller" + $nl + "PC-Seriennummer:$Seriennummer" + $nl + "Grafikkarte:$GPUName mit $GPURAM GB VRAM" + $nl + $hdds
-out-file -filepath Auslesen.txt -inputobject $a -encoding ASCII -width 50
+$Dateiname = "$env:computername.txt"
+$a = "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller:$Hersteller" + $nl + "PC-Seriennummer:$Seriennummer" + $nl + "Grafikkarte:$GPUName mit $GPURAM GB VRAM" + $nl + "Festplattendaten:" + $nl + $hdds + $nl + "Windows wurde am:" + $windatum + " installiert" + $nl +"SMB " + $empfangsmb1
+out-file -filepath $Dateiname -inputobject $a -encoding ASCII -width 50
