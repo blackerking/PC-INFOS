@@ -1,2 +1,2 @@
 # PC-INFOS
-Get PC Information via Powershell
+Generates PC details and creates a local file with short information about the PC and Windows system
