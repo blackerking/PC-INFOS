@@ -1,4 +1,4 @@
-﻿"Hole RAW Daten"
+"Hole RAW Daten"
 [String]$empfangsname = Get-WmiObject -class win32_processor -Property  "Name" | Select-Object -Property "Name"
 [String]$empfangscores = Get-WmiObject -class win32_processor -Property  "numberOfCores" | Select-Object -Property "numberOfCores"
 [String]$empfangslcores = Get-WmiObject -class win32_processor -Property  "NumberOfLogicalProcessors" | Select-Object -Property "NumberOfLogicalProcessors"
@@ -15,7 +15,8 @@ $empfanginstalldatum = Get-WmiObject Win32_OperatingSystem
 $hdds = Get-PhysicalDisk | Select Model , SerialNumber , Size , BusType, HealthStatus , OperationalStatus
 
 $nl = [System.Environment]::NewLine # Zeilenumbruch einer Variable zuweisen
-"Erzeuge lesbare Daten"
+$username = [System.Environment]::UserName
+"Erzeuge lesbare Daten..."
 
 #Namen bereinigen  
     $Tempname = $empfangsname.Remove(0,7)
@@ -78,15 +79,17 @@ $nl = [System.Environment]::NewLine # Zeilenumbruch einer Variable zuweisen
     $idatum = $empfanginstalldatum.ConvertToDateTime($empfanginstalldatum.InstallDate)
 	
 	
-"Fertig..."
+"Fertig mit auslesen..."
+"Einstellungen werden vorgenommen..."
+if($smb -ne "Disabled"){
+    "SMB1 wird deaktiviert"
+    Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart
+}
 
-"$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB DDR$RAMTYP RAM"
-"PC(BIOS)-Hersteller:$Hersteller"
-"PC-Seriennummer:$Seriennummer"
-"Grafikkarte:$GPUName mit $GPURAM GB VRAM"
-
+ "Daten werden geschrieben..."
 
 $Dateiname = "$env:computername.txt"
-$a = "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller:$Hersteller" + $nl + "PC-Seriennummer:$Seriennummer" + $nl + "Grafikkarte:$GPUName mit $GPURAM GB VRAM" + $nl + "Festplattendaten:" + $nl + $hdds + $nl + "Windows wurde am: " + $idatum + " installiert" + $nl +"SMB1 " + $smb
+$a = "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller: $Hersteller" + $nl + "PC-Seriennummer: $Seriennummer" + $nl + "Grafikkarte: $GPUName mit $GPURAM GB VRAM" + $nl + "Festplattendaten:" + $nl + $hdds + $nl + "Windows wurde am: " + $idatum + " installiert" + $nl +"SMB1 " + $smb + $nl + "aktiver Benutzer: $username"
 out-file -filepath $Dateiname -inputobject $a -encoding ASCII -width 50
 
+"Daten aufgeschrieben: $Dateiname"
