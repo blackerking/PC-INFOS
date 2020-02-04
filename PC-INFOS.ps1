@@ -80,11 +80,6 @@ $username = [System.Environment]::UserName
 	
 	
 "Fertig mit auslesen..."
-"Einstellungen werden vorgenommen..."
-if($smb -ne "Disabled"){
-    "SMB1 wird deaktiviert"
-    Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart
-}
 
  "Daten werden geschrieben..."
 
@@ -92,4 +87,5 @@ $Dateiname = "$env:computername.txt"
 $a = "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller: $Hersteller" + $nl + "PC-Seriennummer: $Seriennummer" + $nl + "Grafikkarte: $GPUName mit $GPURAM GB VRAM" + $nl + "Festplattendaten:" + $nl + $hdds + $nl + "Windows wurde am: " + $idatum + " installiert" + $nl +"SMB1 " + $smb + $nl + "aktiver Benutzer: $username"
 out-file -filepath $Dateiname -inputobject $a -encoding ASCII -width 50
 
+Add-Content liste.txt $a
 "Daten aufgeschrieben: $Dateiname"
