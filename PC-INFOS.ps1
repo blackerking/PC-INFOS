@@ -9,7 +9,7 @@
 [String]$empfangsramtyp = Get-wmiobject Win32_PhysicalMemory | Select Speed -first 1
 [String]$empfanggrakaname = Get-WmiObject -class win32_VideoController | Select Description
 [String]$empfanggpuram = Get-WmiObject -class win32_VideoController | Select AdapterRAM
-[String]$empfangsmb = Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol | Select State
+#[String]$empfangsmb = Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol | Select State
 $empfanginstalldatum = Get-WmiObject Win32_OperatingSystem
 
 $hdds = Get-PhysicalDisk | Select Model , SerialNumber , Size , BusType, HealthStatus , OperationalStatus
@@ -30,7 +30,7 @@ $username = [System.Environment]::UserName
 
 #Logischekerne bereinigen
     $Templcore = $empfangslcores.Remove(0,28)
-    $Templcore = $Tempcore.Replace("}",$null)
+    $Templcore = $Templcore.Replace("}",$null)
     [int]$LCores = $Templcore
 
 #Logischekerne bereinigen
@@ -84,7 +84,7 @@ $username = [System.Environment]::UserName
  "Daten werden geschrieben..."
 
 $Dateiname = "$env:computername.txt"
-$a = "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller: $Hersteller" + $nl + "PC-Seriennummer: $Seriennummer" + $nl + "Grafikkarte: $GPUName mit $GPURAM GB VRAM" + $nl + "Festplattendaten:" + $nl + $hdds + $nl + "Windows wurde am: " + $idatum + " installiert" + $nl +"SMB1 " + $smb + $nl + "aktiver Benutzer: $username"
+$a = $env:computername + $nl + "$Name - $Cores Kerne - $LCores Threads - $Speed Mhz - $RAM GB RAM" +$nl+ "PC(BIOS)-Hersteller: $Hersteller" + $nl + "PC-Seriennummer: $Seriennummer" + $nl + "Grafikkarte: $GPUName mit $GPURAM GB VRAM" + $nl + "Festplattendaten:" + $nl + $hdds + $nl + "Windows wurde am: " + $idatum + " installiert" + $nl + "aktiver Benutzer: $username" + $nl + $nl
 out-file -filepath $Dateiname -inputobject $a -encoding ASCII -width 50
 
 Add-Content liste.txt $a
